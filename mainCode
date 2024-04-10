@@ -1,0 +1,43 @@
+if ~isempty(which('-all','taxiPickupData.mat'))
+load taxiPickupData.mat
+else
+error("The file taxiPickupData.mat is not found on the MATLAB path. Add it to the path or run end")
+% Visualization of the distribution (histogram) of the response variable TripCount
+figure;
+histogram(taxiPickups.TripCount, 30, 'EdgeColor', 'w', 'FaceColor', [0.5, 0.8, 0.9]);
+title('Distribution of TripCount');
+xlabel('TripCount');
+ylabel('Frequency');
+% Box plot for TripCount grouped by Location
+figure;
+boxplot(taxiPickups.TripCount, taxiPickups.Location, 'Whisker', 1.5);
+title('Box plot of TripCount grouped by Location');
+xlabel('Location');
+ylabel('TripCount');
+xtickangle(45);
+rng(10);
+cv = cvpartition(size(taxiPickups, 1), 'HoldOut', 0.2);
+% Split the data into training and testing sets
+trainingData = taxiPickups(training(cv), :);
+testingData = taxiPickups(test(cv), :);
+taxiPickups2016 = table;
+taxiPickups2016.PickupTime = taxiPickups.PickupTime + years(1);
+taxiPickups2016.Location = taxiPickups.Location;
+taxiPickups2016 = providedPreprocessing(taxiPickups2016);
+% Display only the first 8 rows of the table
+head(taxiPickups2016)
+myDay = datetime("2016-12-6")
+taxiPickupsMyDay.TripCount = trainedModel1.predictFcn(taxiPickupsMyDay)
+taxiPickupsMyDay.PickupFraction = taxiPickupsMyDay.TripCount./taxiPickupsMyDay.sum_TripCount
+% Group data by Location
+groupedData = groupsummary(taxiPickupsMyDay, 'Location', 'sum', 'TripCount');
+% Extract variables
+locations = groupedData.Location;
+tripCounts = groupedData.sum_TripCount;
+% Create a stacked bar plot
+figure;
+bar(locations, tripCounts, 'stacked');
+title('Stacked Bar Plot of TripCount by Location');
+xlabel('Location');
+ylabel('Total TripCount');
+legend('Location 1', 'Location 2', 'Location 3', 'Location 4', 'Location 5');
